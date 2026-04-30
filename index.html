@@ -3,24 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Simulator - Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <title>Simulatore Sicurezza Password — Impara la Cybersecurity</title>
+    <meta name="description" content="Piattaforma didattica per comprendere la sicurezza delle password tramite simulazione di attacchi brute force. Per studenti e docenti.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/homepage.css">
 </head>
 <body>
-    <nav>
-        <a href="/" class="brand">Simulatore Sicurezza Password</a>
+    <!-- NAVBAR -->
+    <nav class="hp-nav">
+        <a href="/" class="brand"><i class="fas fa-shield-halved"></i> SecurePass Lab</a>
         <div class="links">
-            <a href="/login.html">Accedi</a>
-            <a href="/register.html">Registrati</a>
+            <a href="#come-funziona">Come funziona</a>
+            <a href="#funzionalita">Funzionalità</a>
+            <a href="/login.html" class="nav-btn-outline">Accedi</a>
+            <a href="/register.html" class="nav-btn-solid">Registrati</a>
         </div>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
     </nav>
-    <div class="container">
-        <header style="text-align: center; margin: 4rem 0;">
-            <h1 style="font-size: 3rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Scopri quanto è sicura la tua password</h1>
-            <p style="color: var(--text-muted); font-size: 1.2rem; margin-top: 1rem;">Unisciti per accedere al generatore avanzato e salvare lo storico delle tue password.</p>
-            <a href="/register.html"><button style="max-width: 200px; margin-top: 2rem;">Inizia Ora</button></a>
-        </header>
-    </div>
+
+    <!-- 1. HERO SECTION -->
+    <section class="hero">
+        <div class="hero-bg-effects">
+            <div class="hero-orb hero-orb-1"></div>
+            <div class="hero-orb hero-orb-2"></div>
+            <div class="hero-grid-overlay"></div>
+        </div>
+        <div class="container hero-content">
+            <span class="hero-badge"><i class="fas fa-graduation-cap"></i> Piattaforma Didattica</span>
+            <h1>Simulatore di Sicurezza<br>delle <span class="gradient-text">Password</span></h1>
+            <p class="hero-subtitle">Comprendi quanto è sicura una password tramite simulazione di attacco <strong>brute force</strong>. Nessun attacco reale: solo matematica, logica e consapevolezza.</p>
+            <div class="hero-actions">
+                <a href="/register.html" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Inizia Ora</a>
+                <a href="#come-funziona" class="btn btn-ghost btn-lg"><i class="fas fa-play-circle"></i> Scopri Come Funziona</a>
+            </div>
+            <div class="hero-terminal">
+                <div class="terminal-bar"><span></span><span></span><span></span></div>
+                <div class="terminal-body" id="heroTerminal">
+                    <span class="t-green">$</span> <span class="t-dim">simulazione in corso...</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. DESCRIZIONE DEL PROGETTO -->
+    <section class="section" id="descrizione">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Il Progetto</span>
+                <h2>Cos'è e perché è <span class="gradient-text">importante</span></h2>
+            </div>
+            <div class="desc-grid">
+                <div class="desc-card" data-anim>
+                    <div class="desc-icon" style="--accent: var(--danger);"><i class="fas fa-skull-crossbones"></i></div>
+                    <h3>Cos'è un attacco Brute Force?</h3>
+                    <p>È un metodo in cui un computer prova <strong>sistematicamente tutte le combinazioni possibili</strong> di caratteri fino a indovinare la password. Non serve intelligenza: solo potenza di calcolo e tempo.</p>
+                </div>
+                <div class="desc-card" data-anim>
+                    <div class="desc-icon" style="--accent: var(--warning);"><i class="fas fa-triangle-exclamation"></i></div>
+                    <h3>Perché le password sicure contano?</h3>
+                    <p>Una password di 4 cifre ha solo <strong>10.000 combinazioni</strong> — violabile in millisecondi. Una di 12 caratteri misti ne ha <strong>oltre 3 × 10²¹</strong>: servirebbero migliaia di anni.</p>
+                </div>
+                <div class="desc-card" data-anim>
+                    <div class="desc-icon" style="--accent: var(--success);"><i class="fas fa-flask"></i></div>
+                    <h3>Cosa fa questo portale?</h3>
+                    <p><strong>Simula</strong> l'attacco tramite calcolo matematico, senza eseguirlo realmente. Mostra quante combinazioni esistono e quanto tempo servirebbe per trovare la tua password.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. COME FUNZIONA (STEP BY STEP) -->
+    <section class="section section-dark" id="come-funziona">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Guida</span>
+                <h2>Come funziona, <span class="gradient-text">passo dopo passo</span></h2>
+            </div>
+            <div class="steps-timeline">
+                <div class="step-item" data-anim>
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+                        <h3>Registrazione / Login</h3>
+                        <p>Crea un account sicuro con email e password. I tuoi dati sono protetti e isolati: solo tu puoi accedervi.</p>
+                    </div>
+                </div>
+                <div class="step-item" data-anim>
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-keyboard"></i></div>
+                        <h3>Inserisci una Password</h3>
+                        <p>Digita una password da testare oppure lascia che il sistema ne generi una casuale con i parametri che scegli.</p>
+                    </div>
+                </div>
+                <div class="step-item" data-anim>
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-sliders"></i></div>
+                        <h3>Scegli i Parametri</h3>
+                        <p>Configura la lunghezza, il set di caratteri (numeri, lettere, simboli) e la potenza di calcolo dell'attaccante simulato.</p>
+                    </div>
+                </div>
+                <div class="step-item" data-anim>
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-microchip"></i></div>
+                        <h3>Simulazione</h3>
+                        <p>Il sistema calcola matematicamente le combinazioni possibili (charset<sup>lunghezza</sup>) e visualizza un terminale simulato con l'attacco in corso.</p>
+                    </div>
+                </div>
+                <div class="step-item" data-anim>
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-icon"><i class="fas fa-chart-column"></i></div>
+                        <h3>Risultati e Analisi</h3>
+                        <p>Ricevi il tempo stimato di cracking, il livello di sicurezza (Debole / Medio / Forte) e suggerimenti per migliorare la tua password.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SEZIONE FUNZIONALITÀ -->
+    <section class="section" id="funzionalita">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Funzionalità</span>
+                <h2>Tutto ciò che puoi <span class="gradient-text">esplorare</span></h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" data-anim>
+                    <div class="feature-icon"><i class="fas fa-lock-open"></i></div>
+                    <h3>Simulazione Brute Force</h3>
+                    <p>Visualizza un terminale animato che simula l'attacco, con password generate in tempo reale.</p>
+                </div>
+                <div class="feature-card" data-anim>
+                    <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                    <h3>Calcolo Combinazioni</h3>
+                    <p>Scopri quante combinazioni esistono per ogni configurazione di password: la matematica non mente.</p>
+                </div>
+                <div class="feature-card" data-anim>
+                    <div class="feature-icon"><i class="fas fa-shield-halved"></i></div>
+                    <h3>Analisi Sicurezza</h3>
+                    <p>Ogni password viene classificata come <span style="color:var(--danger);">Debole</span>, <span style="color:var(--warning);">Media</span> o <span style="color:var(--success);">Forte</span> con badge colorato.</p>
+                </div>
+                <div class="feature-card" data-anim>
+                    <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                    <h3>Tempo di Attacco</h3>
+                    <p>Visualizza il tempo stimato in secondi, ore, anni o millenni — con diverse potenze di calcolo.</p>
+                </div>
+                <div class="feature-card" data-anim>
+                    <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3>Consigli Automatici</h3>
+                    <p>Suggerimenti educativi in tempo reale su come migliorare la sicurezza della tua password.</p>
+                </div>
+                <div class="feature-card" data-anim>
+                    <div class="feature-icon"><i class="fas fa-history"></i></div>
+                    <h3>Storico Personale</h3>
+                    <p>Tutte le simulazioni vengono salvate nel tuo profilo. Solo tu puoi visualizzarle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. SEZIONE DIDATTICA -->
+    <section class="section section-dark" id="didattica">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Didattica</span>
+                <h2>Progettato per <span class="gradient-text">imparare</span></h2>
+            </div>
+            <div class="edu-layout">
+                <div class="edu-main" data-anim>
+                    <h3><i class="fas fa-book-open"></i> Cosa imparerai</h3>
+                    <ul class="edu-list">
+                        <li><i class="fas fa-check-circle"></i> <strong>Sicurezza informatica:</strong> perché le password deboli sono un rischio concreto</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Complessità computazionale:</strong> come cresce esponenzialmente il numero di combinazioni</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Best practice:</strong> le regole d'oro per creare password inviolabili</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Potenza di calcolo:</strong> differenza tra un PC di casa e un supercomputer</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Pensiero critico:</strong> valutare la sicurezza con dati oggettivi, non intuizioni</li>
+                    </ul>
+                </div>
+                <div class="edu-cards" data-anim>
+                    <div class="edu-card">
+                        <div class="edu-card-icon"><i class="fas fa-user-graduate"></i></div>
+                        <h4>Per Studenti</h4>
+                        <p>Impara la cybersecurity con un approccio pratico e visuale, senza bisogno di competenze avanzate.</p>
+                    </div>
+                    <div class="edu-card">
+                        <div class="edu-card-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <h4>Per Docenti</h4>
+                        <p>Utilizza il portale come strumento didattico in classe per lezioni su sicurezza e complessità algoritmica.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. CALL TO ACTION -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <h2>Pronto a scoprire quanto è sicura<br>la tua <span class="gradient-text">password</span>?</h2>
+            <p>Registrati gratuitamente e inizia la tua prima simulazione in pochi secondi.</p>
+            <div class="hero-actions">
+                <a href="/register.html" class="btn btn-primary btn-lg"><i class="fas fa-user-plus"></i> Crea Account Gratuito</a>
+                <a href="/login.html" class="btn btn-ghost btn-lg"><i class="fas fa-sign-in-alt"></i> Hai già un account? Accedi</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FOOTER -->
+    <footer class="hp-footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4><i class="fas fa-shield-halved"></i> SecurePass Lab</h4>
+                <p>Piattaforma didattica per la simulazione della sicurezza delle password. Progetto educativo — nessun attacco reale viene eseguito.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Link Utili</h4>
+                <a href="#come-funziona">Come funziona</a>
+                <a href="#funzionalita">Funzionalità</a>
+                <a href="#didattica">Sezione didattica</a>
+                <a href="/login.html">Accedi</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contatti</h4>
+                <a href="mailto:info@securepasslab.it"><i class="fas fa-envelope"></i> info@securepasslab.it</a>
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fas fa-school"></i> Istituto Scolastico</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legale</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Termini di Servizio</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SecurePass Lab — Progetto Didattico. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+    <script>
+    // Mobile menu toggle
+    document.getElementById('mobileToggle')?.addEventListener('click', () => {
+        document.querySelector('.hp-nav .links').classList.toggle('open');
+    });
+
+    // Scroll animations (IntersectionObserver)
+    const animEls = document.querySelectorAll('[data-anim]');
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('anim-in'); obs.unobserve(e.target); }});
+    }, { threshold: 0.15 });
+    animEls.forEach(el => obs.observe(el));
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        });
+    });
+
+    // Hero terminal animation
+    const termEl = document.getElementById('heroTerminal');
+    if (termEl) {
+        const lines = [
+            { text: '$ analisi password: "abc123"', cls: '' },
+            { text: '  charset: 36 | lunghezza: 6', cls: 't-dim' },
+            { text: '  combinazioni: 2.176.782.336', cls: 't-blue' },
+            { text: '  tempo stimato: 2.17 secondi', cls: 't-red' },
+            { text: '  sicurezza: ██░░░░░░░░ DEBOLE', cls: 't-red' },
+            { text: '', cls: '' },
+            { text: '$ analisi password: "Tr0n!cXz#9pL"', cls: '' },
+            { text: '  charset: 94 | lunghezza: 12', cls: 't-dim' },
+            { text: '  combinazioni: 4.75 × 10²³', cls: 't-blue' },
+            { text: '  tempo stimato: 15.073 anni', cls: 't-green' },
+            { text: '  sicurezza: ██████████ FORTE', cls: 't-green' },
+            { text: '', cls: '' },
+            { text: '$ La lunghezza e la varietà contano.', cls: 't-green' },
+        ];
+        let i = 0;
+        termEl.innerHTML = '';
+        function typeLine() {
+            if (i >= lines.length) { i = 0; termEl.innerHTML = ''; }
+            const line = lines[i];
+            const span = document.createElement('div');
+            span.className = line.cls;
+            span.style.opacity = '0';
+            span.style.transform = 'translateY(4px)';
+            span.textContent = line.text || '\u00A0';
+            termEl.appendChild(span);
+            requestAnimationFrame(() => { span.style.transition = 'all 0.3s'; span.style.opacity = '1'; span.style.transform = 'translateY(0)'; });
+            i++;
+            setTimeout(typeLine, 600);
+        }
+        setTimeout(typeLine, 800);
+    }
+    </script>
 </body>
 </html>
