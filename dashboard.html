@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Password Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <style>
+      .grid-2 { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+      @media (min-width: 1024px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard.html" class="brand">Dashboard</a>
+        <div class="links">
+            <a href="/admin.html" id="adminLink" style="display:none; color: var(--warning);">Area Admin</a>
+            <button id="logoutBtn" style="background: var(--panel-border); color: white; padding: 0.5rem 1rem; width: auto;">Logout</button>
+        </div>
+    </nav>
+    <div class="container">
+        <h1 id="welcomeMsg" style="margin-bottom: 2rem;">Benvenuto</h1>
+        
+        <div class="grid-2">
+            <div class="panel">
+                <h2 class="panel-title">⚙️ Generatore Password</h2>
+                <form id="generatorForm">
+                    <div class="form-group">
+                        <label>Lunghezza: <span id="lengthDisplay" class="range-value">12</span></label>
+                        <input type="range" id="lengthSlider" min="4" max="32" value="12">
+                    </div>
+                    <div class="form-group">
+                        <label for="charsetSelect">Set di Caratteri</label>
+                        <select id="charsetSelect">
+                            <option value="10">Solo Numeri [10]</option>
+                            <option value="26">Solo Minuscole [26]</option>
+                            <option value="52">Lettere Miste [52]</option>
+                            <option value="62" selected>Alfanumerico [62]</option>
+                            <option value="94">Alfanumerico + Simboli [94]</option>
+                        </select>
+                    </div>
+                    <button type="submit" style="margin-top: 1rem;">Genera</button>
+                </form>
+                <div class="success-msg" id="genMsg"></div>
+                <div style="margin-top: 2rem; background: #0f172a; padding: 1rem; border-radius: 8px;">
+                    <label>Risultato</label>
+                    <div id="resultPassword" style="font-family: var(--font-mono); font-size: 1.5rem; color: var(--primary); margin: 0.5rem 0; word-break: break-all;">-</div>
+                    <label>Tempo stimato cracking (Server 1B/s)</label>
+                    <div id="resultTime" style="color: var(--success); font-weight: bold; margin-top: 0.5rem;">-</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title">📚 Storico Password</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Password</th>
+                                <th>Lunghezza</th>
+                                <th>Data Generazione</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/userController.js"></script>
+</body>
+</html>

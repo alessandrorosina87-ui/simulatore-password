@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Password Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/admin.html" class="brand" style="color: var(--warning);">Area Admin</a>
+        <div class="links">
+            <a href="/dashboard.html">Torna alla Dashboard</a>
+            <button id="logoutBtn" style="background: var(--panel-border); color: white; padding: 0.5rem 1rem; width: auto;">Logout</button>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="panel">
+            <h2 class="panel-title">👥 Gestione Utenti e Metriche</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Ruolo</th>
+                            <th>Pwd Generate</th>
+                            <th>Registrazione</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/adminController.js"></script>
+</body>
+</html>

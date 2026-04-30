@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Sicurezza: Simulatore Brute Force</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --panel-border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent: #8b5cf6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --radius: 16px;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #loginScreen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-box h2 {
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-box p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* --- MAIN APP --- */
+        #mainApp {
+            display: none;
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form elements */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        input[type="text"], input[type="password"], select {
+            background-color: #0f172a;
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        .range-value {
+            text-align: right;
+            font-family: var(--font-mono);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background: var(--panel-border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Terminal styling */
+        .terminal {
+            background-color: #000;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            height: 300px;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            border: 1px solid var(--panel-border);
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar for Terminal */
+        .terminal::-webkit-scrollbar {
+            width: 10px;
+        }
+        .terminal::-webkit-scrollbar-track {
+            background: #000; 
+            border-left: 1px solid #333;
+            border-radius: 0 8px 8px 0;
+        }
+        .terminal::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 5px;
+        }
+        .terminal::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        .terminal-content {
+            color: #10b981;
+            white-space: pre-wrap;
+            word-break: break-all;
+            min-height: 100%;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: #10b981;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Results dashboard */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background-color: rgba(15, 23, 42, 0.5);
+            padding: 1.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .badge.warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+        .badge.success { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background-color: var(--bg-color);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 1rem;
+            border: 1px solid var(--panel-border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
+            background-size: 200% 100%;
+            transition: width 0.1s linear;
+        }
+
+        .educational-tip {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+    <div class="login-box">
+        <h2>Accesso Riservato</h2>
+        <p>Inserisci la password per accedere al simulatore</p>
+        
+        <div class="login-form">
+            <input type="password" id="loginPassword" placeholder="Password...">
+            <button onclick="checkLogin()">Accedi</button>
+            <small style="color: var(--text-muted);">(Suggerimento: usa la password 'docente')</small>
+        </div>
+        
+        <div class="login-error" id="loginError">Password errata. Riprova.</div>
+    </div>
+</div>
+
+<!-- MAIN APPLICATION -->
+<div id="mainApp">
+    <div class="container">
+        <header>
+            <h1>Simulatore Sicurezza Password</h1>
+            <p>Laboratorio didattico su complessità computazionale e attacchi Brute Force</p>
+        </header>
+
+        <div class="dashboard">
+            <!-- Configuration Panel -->
+            <div class="panel">
+                <h2 class="panel-title">⚙️ Configurazione Attacco</h2>
+                
+                <div class="form-group">
+                    <label for="passwordInput">Password da testare (opzionale)</label>
+                    <input type="text" id="passwordInput" placeholder="Inserisci una password..." oninput="autoDetect()">
+                    <small style="color: var(--text-muted); font-size: 0.8rem;">Viene usata solo localmente nel tuo browser.</small>
+                </div>
+
+                <div style="border-top: 1px dashed var(--panel-border); margin: 0.5rem 0;"></div>
+
+                <div class="form-group">
+                    <label>Lunghezza Password: <span id="lengthDisplay" class="range-value">8</span></label>
+                    <input type="range" id="lengthSlider" min="1" max="32" value="8" oninput="updateCalculations()">
+                </div>
+
+                <div class="form-group">
+                    <label for="charsetSelect">Set di Caratteri</label>
+                    <select id="charsetSelect" onchange="updateCalculations()">
+                        <option value="10">Solo Numeri (0-9) [10]</option>
+                        <option value="26">Solo Minuscole (a-z) [26]</option>
+                        <option value="52">Lettere Miste (a-z, A-Z) [52]</option>
+                        <option value="62" selected>Alfanumerico (Lettere + Numeri) [62]</option>
+                        <option value="94">Alfanumerico + Simboli [94]</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="speedSelect">Potenza di Calcolo (tentativi/sec)</label>
+                    <select id="speedSelect" onchange="updateCalculations()">
+                        <option value="10000">10.000 (PC Casalingo / Singola CPU)</option>
+                        <option value="1000000000" selected>1.000.000.000 (Server Multi-GPU Locale)</option>
+                        <option value="50000000000">50.000.000.000 (Noleggio Cloud Standard - es. 10 Istanze AWS/GCP)</option>
+                        <option value="1000000000000">1.000.000.000.000 (Infrastruttura Cloud Distribuita Massiccia)</option>
+                        <option value="100000000000000">100.000.000.000.000 (Supercomputer / Botnet Globale)</option>
+                    </select>
+                </div>
+
+                <button id="simBtn" onclick="simulateAttack()">Avvia Simulazione</button>
+            </div>
+
+            <!-- Results & Simulation Column -->
+            <div class="right-column">
+                
+                <!-- Metrics -->
+                <div class="panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.75rem;">
+                        <h2 class="panel-title" style="border-bottom: none; padding-bottom: 0;">📊 Risultati Analisi</h2>
+                        <span id="securityBadge" class="badge warning">Media</span>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Combinazioni Possibili</div>
+                            <div class="metric-value" id="combinationsOut">0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Tempo Stimato</div>
+                            <div class="metric-value" id="timeOut" style="color: var(--primary);">0s</div>
+                        </div>
+                    </div>
+
+                    <div class="educational-tip" id="eduTip">
+                        Aumentando la lunghezza o il set di caratteri, il tempo necessario cresce esponenzialmente.
+                    </div>
+                </div>
+
+                <!-- Terminal -->
+                <div class="panel">
+                    <h2 class="panel-title">💻 Terminale Attacco</h2>
+                    <div class="terminal" id="terminalContainer">
+                        <div class="terminal-content">
+                            <span id="terminalOut">In attesa di avvio simulazione...</span><span class="cursor-blink"></span>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="panel">
+                    <h2 class="panel-title">📈 Complessità Computazionale</h2>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        Come cresce il tempo necessario al variare della lunghezza della password (scala logaritmica).
+                    </p>
+                    <div style="height: 250px; width: 100%;">
+                        <canvas id="complexityChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- LOGIN LOGIC ---
+    function checkLogin() {
+        const inputPw = document.getElementById('loginPassword').value;
+        const errorMsg = document.getElementById('loginError');
+        
+        // Password fittizia lato client
+        if (inputPw === 'docente') {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            // Forza l'aggiornamento del grafico ora che il canvas è visibile
+            updateCalculations();
+        } else {
+            errorMsg.style.display = 'block';
+        }
+    }
+
+    // Permetti l'invio col tasto Enter
+    document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkLogin();
+    });
+
+    // --- MAIN LOGIC ---
+    const pwInput = document.getElementById('passwordInput');
+    const lengthSlider = document.getElementById('lengthSlider');
+    const lengthDisplay = document.getElementById('lengthDisplay');
+    const charsetSelect = document.getElementById('charsetSelect');
+    const speedSelect = document.getElementById('speedSelect');
+    const combinationsOut = document.getElementById('combinationsOut');
+    const timeOut = document.getElementById('timeOut');
+    const securityBadge = document.getElementById('securityBadge');
+    const eduTip = document.getElementById('eduTip');
+    const terminalOut = document.getElementById('terminalOut');
+    const terminalContainer = document.getElementById('terminalContainer');
+    const progressBar = document.getElementById('progressBar');
+    const simBtn = document.getElementById('simBtn');
+
+    let chartInstance = null;
+    let simulationInterval = null;
+    let fullTerminalText = "In attesa di avvio simulazione...";
+
+    function detectCharset(str) {
+        if (!str) return 62;
+        let hasNum = /[0-9]/.test(str);
+        let hasLower = /[a-z]/.test(str);
+        let hasUpper = /[A-Z]/.test(str);
+        let hasSym = /[^a-zA-Z0-9]/.test(str);
+
+        if (hasSym) return 94;
+        if (hasLower && hasUpper && hasNum) return 62;
+        if (hasLower && hasUpper) return 52;
+        if (hasLower && !hasUpper && !hasNum) return 26;
+        if (!hasLower && !hasUpper && hasNum) return 10;
+        return 62;
+    }
+
+    function autoDetect() {
+        const val = pwInput.value;
+        if (val.length > 0) {
+            lengthSlider.value = val.length;
+            charsetSelect.value = detectCharset(val);
+        }
+        updateCalculations();
+    }
+
+    function formatNumberScientific(num) {
+        if (num < 1000000) return Math.floor(num).toLocaleString('it-IT');
+        return num.toExponential(2).replace('e+', ' × 10^');
+    }
+
+    function formatTime(seconds) {
+        if (seconds < 1) return "Istantaneo";
+        
+        const sec = Math.floor(seconds % 60);
+        const min = Math.floor((seconds / 60) % 60);
+        const hours = Math.floor((seconds / 3600) % 24);
+        const days = Math.floor((seconds / 86400) % 365);
+        const years = seconds / (86400 * 365);
+
+        if (years > 1e100) return "Infinito";
+        if (years > 1e9) return "Età dell'Universo";
+        if (years >= 1000) return `${Math.floor(years).toLocaleString('it-IT')} anni`;
+        if (years >= 1) {
+            let y = Math.floor(years);
+            let string = `${y} ann${y===1?'o':'i'}`;
+            if (days > 0) string += `, ${days} giorn${days===1?'o':'i'}`;
+            return string;
+        }
+
+        let parts = [];
+        if (days > 0) parts.push(`${days}g`);
+        if (hours > 0) parts.push(`${hours}h`);
+        if (min > 0 && days === 0) parts.push(`${min}m`);
+        if (sec > 0 && days === 0 && hours === 0) parts.push(`${sec}s`);
+        
+        return parts.join(" ");
+    }
+
+    function updateCalculations() {
+        // Non calcolare se l'app è nascosta (problemi con Chart.js canvas size)
+        if (document.getElementById('mainApp').style.display === 'none') return;
+
+        const length = parseInt(lengthSlider.value);
+        lengthDisplay.textContent = length;
+        const charsetSize = parseInt(charsetSelect.value);
+        const speed = parseFloat(speedSelect.value);
+
+        const combinations = Math.pow(charsetSize, length);
+        const timeSeconds = combinations / speed;
+
+        combinationsOut.textContent = formatNumberScientific(combinations);
+        timeOut.textContent = formatTime(timeSeconds);
+
+        securityBadge.className = 'badge';
+        if (timeSeconds < 3600) {
+            securityBadge.classList.add('danger');
+            securityBadge.textContent = 'Debole';
+            eduTip.innerHTML = "<strong>Password Debole:</strong> Può essere forzata in pochissimo tempo. Aumenta la lunghezza o aggiungi simboli.";
+            eduTip.style.borderColor = "var(--danger)";
+        } else if (timeSeconds < 31536000) {
+            securityBadge.classList.add('warning');
+            securityBadge.textContent = 'Media';
+            eduTip.innerHTML = "<strong>Password Media:</strong> Resiste ad attacchi di base, ma un computer potente potrebbe trovarla. Aggiungi qualche carattere in più.";
+            eduTip.style.borderColor = "var(--warning)";
+        } else {
+            securityBadge.classList.add('success');
+            securityBadge.textContent = 'Forte';
+            eduTip.innerHTML = "<strong>Password Forte:</strong> Ottima scelta! Il numero di combinazioni è così elevato da rendere impraticabile un attacco brute force.";
+            eduTip.style.borderColor = "var(--success)";
+        }
+
+        updateChart(charsetSize, speed);
+    }
+
+    function updateChart(charsetSize, speed) {
+        const ctx = document.getElementById('complexityChart').getContext('2d');
+        
+        const labels = Array.from({length: 20}, (_, i) => i + 1);
+        const data = labels.map(len => {
+            const combs = Math.pow(charsetSize, len);
+            let t = combs / speed;
+            return t < 0.001 ? 0.001 : t;
+        });
+
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Tempo stimato (Secondi)',
+                    data: data,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Lunghezza Password', color: '#94a3b8' },
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    y: {
+                        type: 'logarithmic',
+                        title: { display: true, text: 'Secondi (Log)', color: '#94a3b8' },
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' }
+                    }
+                }
+            }
+        });
+    }
+
+    function getRandomChar() {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        return chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    function simulateAttack() {
+        if (simulationInterval) clearInterval(simulationInterval);
+        
+        simBtn.disabled = true;
+        simBtn.textContent = "Simulazione in corso...";
+        
+        const length = parseInt(lengthSlider.value);
+        let duration = 3000;
+        const charsetSize = parseInt(charsetSelect.value);
+        const speed = parseFloat(speedSelect.value);
+        const realTime = Math.pow(charsetSize, length) / speed;
+
+        if (realTime < 1) duration = 1000;
+        else if (realTime < 60) duration = 2000;
+
+        let startTime = Date.now();
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        progressBar.style.background = 'var(--primary)';
+
+        void progressBar.offsetWidth; // Force reflow
+
+        progressBar.style.transition = `width ${duration}ms linear`;
+        progressBar.style.width = '100%';
+
+        fullTerminalText = "Inizializzazione cluster GPU...\nCaricamento dizionario bypassato.\nAvvio attacco forza bruta...\n\n";
+        terminalOut.textContent = fullTerminalText;
+        
+        // Auto-scroll all'inizio
+        terminalContainer.scrollTop = terminalContainer.scrollHeight;
+        
+        simulationInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            
+            // Calcolo proporzionale del tempo fittizio in secondi
+            const percent = Math.min(1, elapsed / duration);
+            const currentSimTime = realTime * percent;
+            
+            let timeLabel = "";
+            if (currentSimTime > 1e12) timeLabel = currentSimTime.toExponential(2) + "s";
+            else if (currentSimTime < 1) timeLabel = currentSimTime.toFixed(3) + "s";
+            else timeLabel = Math.floor(currentSimTime).toLocaleString('it-IT') + "s";
+            
+            let block = "";
+            for(let i=0; i<8; i++) {
+                let attempt = "";
+                for(let j=0; j<length; j++) attempt += getRandomChar();
+                block += `[${timeLabel}] [TRY] ${attempt}  => Access Denied\n`;
+            }
+            
+            fullTerminalText += block;
+            terminalOut.textContent = fullTerminalText;
+
+            // Auto-scroll per seguire il flusso di testo
+            terminalContainer.scrollTop = terminalContainer.scrollHeight;
+
+            if (elapsed >= duration) {
+                clearInterval(simulationInterval);
+                finishSimulation();
+            }
+        }, 100);
+    }
+
+    function finishSimulation() {
+        const targetPw = pwInput.value || Array.from({length: parseInt(lengthSlider.value)}).map(getRandomChar).join('');
+        
+        fullTerminalText += `\n\n[SUCCESS] Collisione trovata!\n[!] PASSWORD IDENTIFICATA: ${targetPw}\n\nTerminazione processo.\n`;
+        terminalOut.textContent = fullTerminalText;
+        
+        // Scroll finale
+        terminalContainer.scrollTop = terminalContainer.scrollHeight;
+        
+        simBtn.disabled = false;
+        simBtn.textContent = "Ripeti Simulazione";
+        
+        progressBar.style.background = 'var(--success)';
+    }
+
+</script>
+</body>
+</html>
