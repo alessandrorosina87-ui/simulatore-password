@@ -23,48 +23,97 @@
         <h1 id="welcomeMsg" style="margin-bottom: 2rem;">Benvenuto</h1>
         
         <div class="grid-2">
-            <div class="panel">
-                <h2 class="panel-title">⚙️ Generatore Password</h2>
-                <form id="generatorForm">
-                    <div class="form-group">
-                        <label>Lunghezza: <span id="lengthDisplay" class="range-value">12</span></label>
-                        <input type="range" id="lengthSlider" min="4" max="32" value="12">
+            <!-- Colonna Sinistra: Input e Storico -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div class="panel">
+                    <h2 class="panel-title">⚙️ Configurazione Simulatore</h2>
+                    <form id="generatorForm">
+                        <div class="form-group">
+                            <label for="customPassword">Password da testare (opzionale)</label>
+                            <input type="text" id="customPassword" placeholder="Inserisci una password..." style="font-family: var(--font-mono);">
+                            <small style="color: var(--text-muted); font-size: 0.8rem;">Se inserita, simulerà l'attacco su questa. Altrimenti ne genererà una casuale.</small>
+                        </div>
+                        
+                        <div style="border-top: 1px dashed var(--panel-border); margin: 0.5rem 0;"></div>
+
+                        <div class="form-group">
+                            <label>Lunghezza: <span id="lengthDisplay" class="range-value">12</span></label>
+                            <input type="range" id="lengthSlider" min="4" max="32" value="12">
+                        </div>
+                        <div class="form-group">
+                            <label for="charsetSelect">Set di Caratteri</label>
+                            <select id="charsetSelect">
+                                <option value="10">Solo Numeri [10]</option>
+                                <option value="26">Solo Minuscole [26]</option>
+                                <option value="52">Lettere Miste [52]</option>
+                                <option value="62" selected>Alfanumerico [62]</option>
+                                <option value="94">Alfanumerico + Simboli [94]</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="speedSelect">Potenza di Calcolo (tentativi/sec)</label>
+                            <select id="speedSelect">
+                                <option value="1000000000" selected>1 Miliardo (Server Multi-GPU)</option>
+                                <option value="50000000000">50 Miliardi (Cloud Cluster)</option>
+                                <option value="1000000000000">1 Bilione (Infrastruttura Massiccia)</option>
+                            </select>
+                        </div>
+                        <button type="submit" id="simBtn" style="margin-top: 1rem;">Avvia Simulazione</button>
+                    </form>
+                    <div class="success-msg" id="genMsg"></div>
+                </div>
+
+                <div class="panel">
+                    <h2 class="panel-title">📚 Storico Salvataggi</h2>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Password</th>
+                                    <th>Lunghezza</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody">
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group">
-                        <label for="charsetSelect">Set di Caratteri</label>
-                        <select id="charsetSelect">
-                            <option value="10">Solo Numeri [10]</option>
-                            <option value="26">Solo Minuscole [26]</option>
-                            <option value="52">Lettere Miste [52]</option>
-                            <option value="62" selected>Alfanumerico [62]</option>
-                            <option value="94">Alfanumerico + Simboli [94]</option>
-                        </select>
-                    </div>
-                    <button type="submit" style="margin-top: 1rem;">Genera</button>
-                </form>
-                <div class="success-msg" id="genMsg"></div>
-                <div style="margin-top: 2rem; background: #0f172a; padding: 1rem; border-radius: 8px;">
-                    <label>Risultato</label>
-                    <div id="resultPassword" style="font-family: var(--font-mono); font-size: 1.5rem; color: var(--primary); margin: 0.5rem 0; word-break: break-all;">-</div>
-                    <label>Tempo stimato cracking (Server 1B/s)</label>
-                    <div id="resultTime" style="color: var(--success); font-weight: bold; margin-top: 0.5rem;">-</div>
                 </div>
             </div>
 
-            <div class="panel">
-                <h2 class="panel-title">📚 Storico Password</h2>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Password</th>
-                                <th>Lunghezza</th>
-                                <th>Data Generazione</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyBody">
-                        </tbody>
-                    </table>
+            <!-- Colonna Destra: Analisi e Terminale -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div class="panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+                        <h2 class="panel-title" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">📊 Analisi Matematica</h2>
+                        <span id="securityBadge" class="badge warning">Media</span>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Combinazioni Possibili</div>
+                            <div class="metric-value" id="combinationsOut" style="font-size: 1.2rem;">0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Tempo Stimato</div>
+                            <div class="metric-value" id="timeOut" style="color: var(--primary); font-size: 1.2rem;">0s</div>
+                        </div>
+                    </div>
+                    <div id="eduTip" style="padding: 1rem; background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; font-size: 0.95rem;">
+                        In attesa di avviare la simulazione...
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2 class="panel-title">💻 Terminale Attacco</h2>
+                    <div class="terminal" id="terminalContainer">
+                        <div class="terminal-content">
+                            <span id="terminalOut">Pronto ad iniziare l'attacco forza bruta...</span><span class="cursor-blink"></span>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
                 </div>
             </div>
         </div>
