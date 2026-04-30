@@ -3,12 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDvtOLo2x7Qfzge_-rrvpPsRNoqs3WDlWE",
+  authDomain: "simulatore-password.firebaseapp.com",
+  projectId: "simulatore-password",
+  storageBucket: "simulatore-password.firebasestorage.app",
+  messagingSenderId: "232875155513",
+  appId: "1:232875155513:web:032c9a6148f459124c2de8"
 };
 
 const app = initializeApp(firebaseConfig);
