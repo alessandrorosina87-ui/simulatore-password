@@ -80,6 +80,12 @@ if (form) {
     const charsetSize = parseInt(charsetSelect.value);
     const speed = parseFloat(speedSelect.value);
 
+    // Mostrare chiaramente la velocità scelta (formattata)
+    const speedLabel = document.getElementById("speedLabelOut");
+    if (speedLabel) {
+        speedLabel.textContent = `Tempo (a ${formatNumberScientific(speed)} t/s)`;
+    }
+
     const { combinations, timeSeconds } = calculateSecurity(length, charsetSize, speed);
 
     combinationsOut.textContent = formatNumberScientific(combinations);

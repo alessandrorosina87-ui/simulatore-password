@@ -51,12 +51,16 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="speedSelect">Potenza di Calcolo (tentativi/sec)</label>
+                            <label for="speedSelect" title="Seleziona la potenza hardware a disposizione dell'attaccante">Potenza di Calcolo (tentativi/sec)</label>
                             <select id="speedSelect">
-                                <option value="1000000000" selected>1 Miliardo (Server Multi-GPU)</option>
-                                <option value="50000000000">50 Miliardi (Cloud Cluster)</option>
-                                <option value="1000000000000">1 Bilione (Infrastruttura Massiccia)</option>
+                                <option value="1000000" title="Simula un comune computer domestico">PC di casa (1e6)</option>
+                                <option value="100000000" title="Simula un PC ottimizzato con schede video dedicate">PC da gaming (1e8)</option>
+                                <option value="1000000000000" selected title="Simula un server ad alte prestazioni">Supercomputer (1e12)</option>
+                                <option value="1000000000000000" title="Simula un network distribuito mondiale o botnet">Cloud computing (cluster) (1e15)</option>
                             </select>
+                            <small style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; display: block; line-height: 1.4;">
+                                💡 <strong>Nota Didattica:</strong> Anche con un'enorme potenza di calcolo (es. Cloud Computing), la complessità cresce esponenzialmente se la password è lunga e varia.
+                            </small>
                         </div>
                         <button type="submit" id="simBtn" style="margin-top: 1rem;">Avvia Simulazione</button>
                     </form>
@@ -95,7 +99,7 @@
                             <div class="metric-value" id="combinationsOut" style="font-size: 1.2rem;">0</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">Tempo Stimato</div>
+                            <div class="metric-label" id="speedLabelOut">Tempo Stimato</div>
                             <div class="metric-value" id="timeOut" style="color: var(--primary); font-size: 1.2rem;">0s</div>
                         </div>
                     </div>
