@@ -407,14 +407,64 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="speedSelect">Potenza di Calcolo (tentativi/sec)</label>
-                    <select id="speedSelect" onchange="updateCalculations()">
-                        <option value="10000">10.000 (PC Casalingo / Singola CPU)</option>
-                        <option value="1000000000" selected>1.000.000.000 (Server Multi-GPU Locale)</option>
-                        <option value="50000000000">50.000.000.000 (Noleggio Cloud Standard - es. 10 Istanze AWS/GCP)</option>
-                        <option value="1000000000000">1.000.000.000.000 (Infrastruttura Cloud Distribuita Massiccia)</option>
-                        <option value="100000000000000">100.000.000.000.000 (Supercomputer / Botnet Globale)</option>
+                    <label>Potenza di Calcolo (tentativi/sec)</label>
+                    <select id="speedSelect" onchange="updateCalculations()" style="display: none;">
+                        <option value="1000000">10.000 (PC Casalingo / Singola CPU)</option>
+                        <option value="100000000">1.000.000.000 (Server Multi-GPU Locale)</option>
+                        <option value="1000000000000" selected>50.000.000.000 (Noleggio Cloud Standard - es. 10 Istanze AWS/GCP)</option>
+                        <option value="1000000000000000">1.000.000.000.000 (Infrastruttura Cloud Distribuita Massiccia)</option>
                     </select>
+
+                    <div class="power-grid" id="powerGrid">
+                        <div class="power-card" data-value="1000000">
+                            <img src="/public/images/home_pc.png" class="power-card-img" alt="PC di casa">
+                            <div class="power-card-content">
+                                <div class="power-card-title">PC di casa</div>
+                                <div class="power-card-specs">
+                                    <span>⚡ 3.2 GHz</span>
+                                    <span>🧠 8 GB RAM</span>
+                                    <span>🎮 GPU Integrata</span>
+                                    <span>🌐 Standalone</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="power-card" data-value="100000000">
+                            <img src="/public/images/gaming_pc.png" class="power-card-img" alt="PC da gaming">
+                            <div class="power-card-content">
+                                <div class="power-card-title">PC da gaming</div>
+                                <div class="power-card-specs">
+                                    <span>⚡ 4.8 GHz</span>
+                                    <span>🧠 32 GB RAM</span>
+                                    <span>🎮 RTX 4090</span>
+                                    <span>🌐 Standalone</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="power-card selected" data-value="1000000000000">
+                            <img src="/public/images/supercomputer.png" class="power-card-img" alt="Supercomputer">
+                            <div class="power-card-content">
+                                <div class="power-card-title">Supercomputer</div>
+                                <div class="power-card-specs">
+                                    <span>⚡ 64 Core / Nodo</span>
+                                    <span>🧠 2 TB RAM</span>
+                                    <span>🎮 8x Tesla A100</span>
+                                    <span>🌐 Cluster</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="power-card" data-value="1000000000000000">
+                            <img src="/public/images/cloud_cluster.png" class="power-card-img" alt="Cloud computing">
+                            <div class="power-card-content">
+                                <div class="power-card-title">Cloud Computing</div>
+                                <div class="power-card-specs">
+                                    <span>⚡ Nodi Scalabili</span>
+                                    <span>🧠 RAM Dinamica</span>
+                                    <span>🎮 Rete Distribuita</span>
+                                    <span>🌐 Cloud</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <button id="simBtn" onclick="simulateAttack()">Avvia Simulazione</button>
@@ -574,6 +624,33 @@
         return parts.join(" ");
     }
 
+    function calculateExactCombinations(str) {
+        let counts = { lower: 0, upper: 0, num: 0, sym: 0 };
+        for(let i=0; i<str.length; i++) {
+            let c = str[i];
+            if (/[a-z]/.test(c)) counts.lower++;
+            else if (/[A-Z]/.test(c)) counts.upper++;
+            else if (/[0-9]/.test(c)) counts.num++;
+            else counts.sym++;
+        }
+        
+        function fact(n) {
+            if (n <= 1) return 1;
+            let r = 1;
+            for(let i=2; i<=n; i++) r*=i;
+            return r;
+        }
+        
+        let L = str.length;
+        let permutations = fact(L) / (fact(counts.lower) * fact(counts.upper) * fact(counts.num) * fact(counts.sym));
+        
+        return permutations 
+             * Math.pow(26, counts.lower) 
+             * Math.pow(26, counts.upper) 
+             * Math.pow(10, counts.num) 
+             * Math.pow(32, counts.sym);
+    }
+
     function updateCalculations() {
         // Non calcolare se l'app è nascosta (problemi con Chart.js canvas size)
         if (document.getElementById('mainApp').style.display === 'none') return;
@@ -583,7 +660,16 @@
         const charsetSize = parseInt(charsetSelect.value);
         const speed = parseFloat(speedSelect.value);
 
-        const combinations = Math.pow(charsetSize, length);
+        let combinations;
+        const val = pwInput.value;
+        // Se l'utente ha inserito una password e la lunghezza coincide, usa la composizione esatta
+        if (val.length > 0 && val.length === length) {
+            combinations = calculateExactCombinations(val);
+        } else {
+            // Altrimenti usa il calcolo di forza bruta generica
+            combinations = Math.pow(charsetSize, length);
+        }
+        
         const timeSeconds = combinations / speed;
 
         combinationsOut.textContent = formatNumberScientific(combinations);
@@ -742,6 +828,24 @@
         
         progressBar.style.background = 'var(--success)';
     }
+
+    // Sync power cards with hidden select to maintain existing logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.power-card');
+        const select = document.getElementById('speedSelect');
+        
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Update visuals
+                cards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                
+                // Update hidden select and trigger change event
+                select.value = card.getAttribute('data-value');
+                select.dispatchEvent(new Event('change'));
+            });
+        });
+    });
 
 </script>
 </body>

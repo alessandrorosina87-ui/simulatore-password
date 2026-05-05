@@ -134,7 +134,7 @@ if (form) {
     }
 
     // Formula: combinazioni = charset ^ lunghezza
-    const { combinations, timeSeconds } = calculateSecurity(length, charsetSize, speed);
+    const { combinations, timeSeconds } = calculateSecurity(length, charsetSize, speed, pwInput.value);
 
     combinationsOut.textContent = formatNumberScientific(combinations);
     timeOut.textContent = formatTime(timeSeconds);
@@ -184,7 +184,7 @@ if (form) {
       lengthDisplay.textContent = targetPw.length;
     }
 
-    const { combinations, timeSeconds } = calculateSecurity(length, charsetSize, speed);
+    const { combinations, timeSeconds } = calculateSecurity(length, charsetSize, speed, targetPw);
 
     // --- Calcola la posizione della password target nel brute force ---
     // Questo serve per mostrare tentativi che "convergono" verso la soluzione

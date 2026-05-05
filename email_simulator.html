@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulazione Sicurezza Account Email - SecurePass Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/homepage.css">
+    <style>
+        .simulator-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        @media (min-width: 1024px) {
+            .simulator-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .info-card {
+            background-color: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        .info-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .attack-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .attack-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .attack-card h4 {
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+        .defense-list {
+            list-style: none;
+            padding: 0;
+        }
+        .defense-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .defense-list i {
+            color: var(--success);
+            margin-top: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="hp-nav">
+        <a href="/" class="brand"><i class="fas fa-shield-halved"></i> SecurePass Lab</a>
+        <div class="links">
+            <a href="/">Home</a>
+            <a href="/login.html" class="nav-btn-outline">Accedi</a>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 6rem;">
+        <header style="text-align: center; margin-bottom: 3rem;">
+            <h1>Simulazione Sicurezza <span class="gradient-text">Account Email</span></h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">Laboratorio didattico: scopri come avvengono gli attacchi alle password e come difenderti.</p>
+        </header>
+
+        <div class="info-card">
+            <h3><i class="fas fa-info-circle"></i> Attenzione: Simulazione Didattica ed Etica</h3>
+            <p>Questa pagina è progettata <strong>esclusivamente a scopo educativo</strong>. Inserisci dati fittizi o simulati per comprendere le meccaniche. Il sistema esegue un'analisi matematica locale sul tuo browser. Nessun dato viene trasmesso, salvato o utilizzato per attacchi reali. Attaccare sistemi senza autorizzazione è un reato penalmente perseguibile.</p>
+        </div>
+
+        <div class="attack-types">
+            <div class="attack-card">
+                <h4><i class="fas fa-hammer"></i> Brute Force</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Tenta ogni possibile combinazione di caratteri. Lento ma matematicamente infallibile se il tempo è infinito.</p>
+            </div>
+            <div class="attack-card">
+                <h4><i class="fas fa-book"></i> Dictionary Attack</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Usa liste di parole comuni (es. "password123", "admin"). Estremamente veloce contro password prevedibili.</p>
+            </div>
+            <div class="attack-card">
+                <h4><i class="fas fa-users-viewfinder"></i> Credential Stuffing</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Riutilizza credenziali rubate da altre violazioni (data breach). Funziona se usi la stessa password ovunque.</p>
+            </div>
+        </div>
+
+        <div class="simulator-grid">
+            <!-- INPUT FORM -->
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-user-shield"></i> Dati Account (Simulati)</h2>
+                <form id="simForm" onsubmit="event.preventDefault(); startSimulation();">
+                    <div class="form-group">
+                        <label for="simEmail">Email di Test</label>
+                        <input type="email" id="simEmail" placeholder="mario.rossi@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="simPassword">Password Locale</label>
+                        <input type="password" id="simPassword" placeholder="Inserisci una password finta..." required>
+                    </div>
+                    
+                    <button type="submit" id="startBtn" style="margin-top: 1rem;">
+                        <i class="fas fa-search"></i> Analizza Sicurezza
+                    </button>
+                </form>
+
+                <div style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-main); font-size: 1.1rem;"><i class="fas fa-shield-cat"></i> Come difendersi (Best Practice)</h3>
+                    <ul class="defense-list">
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Lunghezza > Complessità:</strong> Una passphrase ("CavalloBatteriaSpillaCorretta") è meglio di una corta ("P@ss1").</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Non riutilizzare:</strong> Usa una password diversa per ogni servizio per prevenire il credential stuffing.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Usa un Password Manager:</strong> Strumenti come Bitwarden o 1Password ricordano e generano password complesse per te.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Attiva l'autenticazione a due fattori (2FA):</strong> Anche se indovinano la password, l'attaccante viene bloccato senza il secondo codice.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TERMINAL & RESULTS -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.75rem;">
+                        <h2 class="panel-title" style="border-bottom: none; margin: 0; padding: 0;">📊 Risultato Analisi</h2>
+                        <span id="riskBadge" class="badge">In attesa</span>
+                    </div>
+                    
+                    <div class="metrics-grid" style="margin-top: 1rem;">
+                        <div class="metric-card">
+                            <div class="metric-label">Tempo Stimato (Brute Force)</div>
+                            <div class="metric-value" id="calcTime">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Rischio Dizionario</div>
+                            <div class="metric-value" id="dictRisk">-</div>
+                        </div>
+                    </div>
+                    <div id="simTip" class="error-msg" style="display: block; padding: 1rem; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--text-muted); margin-top: 0.5rem;">
+                        Inserisci le credenziali finte e premi "Analizza Sicurezza" per simulare un attacco e visualizzare i report.
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2 class="panel-title"><i class="fas fa-terminal"></i> Terminale Hacking (Simulato)</h2>
+                    <div class="terminal" id="terminalBox">
+                        <div class="terminal-content">
+                            <span id="terminalOut">Pronto a lanciare l'attacco didattico...</span><span class="cursor-blink"></span>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="hp-footer" style="margin-top: 4rem;">
+        <div class="container footer-bottom">
+            <p>&copy; 2026 SecurePass Lab — Progetto Didattico. Tutti i diritti riservati. Nessun dato reale viene violato.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="/src/emailSimulator.js"></script>
+</body>
+</html>

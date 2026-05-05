@@ -38,13 +38,45 @@ export const detectCharset = (str) => {
   return 62;
 };
 
+export const calculateExactCombinations = (str) => {
+  let counts = { lower: 0, upper: 0, num: 0, sym: 0 };
+  for(let i=0; i<str.length; i++) {
+      let c = str[i];
+      if (/[a-z]/.test(c)) counts.lower++;
+      else if (/[A-Z]/.test(c)) counts.upper++;
+      else if (/[0-9]/.test(c)) counts.num++;
+      else counts.sym++;
+  }
+  
+  const fact = (n) => {
+      if (n <= 1) return 1;
+      let r = 1;
+      for(let i=2; i<=n; i++) r*=i;
+      return r;
+  };
+  
+  let L = str.length;
+  let permutations = fact(L) / (fact(counts.lower) * fact(counts.upper) * fact(counts.num) * fact(counts.sym));
+  
+  return permutations 
+       * Math.pow(26, counts.lower) 
+       * Math.pow(26, counts.upper) 
+       * Math.pow(10, counts.num) 
+       * Math.pow(32, counts.sym);
+};
+
 /**
  * Calcola le combinazioni e il tempo di cracking.
  * Formula: combinazioni = charsetSize ^ length
  *          tempo = combinazioni / velocità
  */
-export const calculateSecurity = (length, charsetSize, speed) => {
-  const combinations = Math.pow(charsetSize, length);
+export const calculateSecurity = (length, charsetSize, speed, customPassword = null) => {
+  let combinations;
+  if (customPassword && customPassword.length === length) {
+    combinations = calculateExactCombinations(customPassword);
+  } else {
+    combinations = Math.pow(charsetSize, length);
+  }
   const timeSeconds = combinations / speed;
   return { combinations, timeSeconds };
 };
